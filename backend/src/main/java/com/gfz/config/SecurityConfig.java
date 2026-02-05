@@ -33,6 +33,7 @@ public class SecurityConfig {
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/newsletter/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/articles").permitAll()
