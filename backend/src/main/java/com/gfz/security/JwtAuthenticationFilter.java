@@ -30,7 +30,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String path = request.getRequestURI();
         
-        if (path.startsWith("/api/auth/") || "OPTIONS".equals(request.getMethod())) {
+        // Skip JWT filter pour les endpoints publics
+        if (path.startsWith("/api/auth/") 
+            || path.startsWith("/actuator/") 
+            || "OPTIONS".equals(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
