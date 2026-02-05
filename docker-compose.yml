@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gfz-postgres
+    environment:
+      POSTGRES_DB: gfzdb
+      POSTGRES_USER: gfzuser
+      POSTGRES_PASSWORD: gfzpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gfzuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:latest
+    container_name: gfz-adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gfz-backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: gfzdb
+      DB_USER: gfzuser
+      DB_PASSWORD: gfzpass
+      CORS_ORIGINS: http://localhost:3000
+      JWT_SECRET: NXYMAmBpRvY7V8wBIh8zcStYiiFy9O3/bZF7Dn9S0P8=
+      JWT_EXPIRATION: 3600000
+      DOCUMENTS_DIR: /app/documents
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/src/main/resources/documents:/app/documents
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gfz-frontend
+    environment:
+      API_BASE_URL: http://localhost:8080/api
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

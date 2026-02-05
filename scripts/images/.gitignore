@@ -1,0 +1,9 @@
+# Ignorer toutes les images téléchargées
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+
+# Garder ce fichier
+!.gitignore
