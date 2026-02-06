@@ -14,7 +14,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:8080/api'
+      // En prod / K8s : URL relative = même origine (Traefik route /api vers le backend)
+      // En dev local : définir API_BASE_URL=http://localhost:8080/api
+      apiBase: process.env.API_BASE_URL || '/api'
     }
   }
 })
