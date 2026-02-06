@@ -1,0 +1,19 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: gfz-prod
+  namespace: prod
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`gfz.local`) && PathPrefix(`/api`)
+    kind: Rule
+    services:
+    - name: backend
+      port: 8080
+  - match: Host(`gfz.local`)
+    kind: Rule
+    services:
+    - name: frontend
+      port: 3000
