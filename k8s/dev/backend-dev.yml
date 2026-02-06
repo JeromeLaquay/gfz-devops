@@ -19,7 +19,7 @@ metadata:
 type: Opaque
 stringData:
   DB_PASSWORD: devpass123
-  JWT_SECRET: dev-jwt-secret-key-change-me
+  JWT_SECRET: mCnYSHIL0evDMgXO5U1cm4VfWnBPPnMWUmZNasnF9ng=
 ---
 apiVersion: apps/v1
 kind: Deployment
