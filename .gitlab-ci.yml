@@ -6,7 +6,7 @@ stages:
   - deploy-prod
 
 variables:
-  REGISTRY: registry.gfz.local:5000
+  REGISTRY: registry.gfz.local:31076
   FRONTEND_IMAGE: ${REGISTRY}/gfz-frontend
   BACKEND_IMAGE: ${REGISTRY}/gfz-backend
 
