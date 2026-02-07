@@ -28,6 +28,7 @@ metadata:
   namespace: dev
 spec:
   replicas: 1
+  progressDeadlineSeconds: 1200
   selector:
     matchLabels:
       app: backend
@@ -38,8 +39,8 @@ spec:
     spec:
       containers:
       - name: backend
-        image: gfz-backend:latest
-        imagePullPolicy: Never  # Pour images locales
+        image: registry.gfz.local:31076/gfz-backend:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
         envFrom:

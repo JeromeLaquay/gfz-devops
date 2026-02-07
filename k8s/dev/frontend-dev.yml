@@ -14,6 +14,7 @@ metadata:
   namespace: dev
 spec:
   replicas: 1
+  progressDeadlineSeconds: 1200
   selector:
     matchLabels:
       app: frontend
@@ -24,8 +25,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: gfz-frontend:latest
-        imagePullPolicy: Never
+        image: registry.gfz.local:31076/gfz-frontend:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         envFrom:
