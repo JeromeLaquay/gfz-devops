@@ -67,6 +67,7 @@ deploy-dev:
     - cp /tmp/kubeconfig /tmp/kubeconfig-work
     - HOST_IP=$(ip route | awk '/default/ {print $3}')
     - sed -i "s/127.0.0.1/${HOST_IP}/g" /tmp/kubeconfig-work
+    - export KUBECONFIG=/tmp/kubeconfig-work
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
@@ -93,6 +94,7 @@ deploy-test:
     - cp /tmp/kubeconfig /tmp/kubeconfig-work
     - HOST_IP=$(ip route | awk '/default/ {print $3}')
     - sed -i "s/127.0.0.1/${HOST_IP}/g" /tmp/kubeconfig-work
+    - export KUBECONFIG=/tmp/kubeconfig-work
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
@@ -119,6 +121,7 @@ deploy-prod:
     - cp /tmp/kubeconfig /tmp/kubeconfig-work
     - HOST_IP=$(ip route | awk '/default/ {print $3}')
     - sed -i "s/127.0.0.1/${HOST_IP}/g" /tmp/kubeconfig-work
+    - export KUBECONFIG=/tmp/kubeconfig-work
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
