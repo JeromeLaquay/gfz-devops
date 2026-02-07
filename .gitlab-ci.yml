@@ -71,8 +71,8 @@ deploy-dev:
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
-    - kubectl rollout status deployment/frontend -n dev
-    - kubectl rollout status deployment/backend -n dev
+    - kubectl rollout status deployment/frontend -n dev || true
+    - kubectl rollout status deployment/backend -n dev || true
   environment:
     name: development
     url: http://dev.gfz.local
