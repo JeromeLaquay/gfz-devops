@@ -54,6 +54,9 @@ test-backend:
 # DEPLOY DEV (automatique sur develop)
 deploy-dev:
   stage: deploy-dev
+  image: bitnami/kubectl:latest
+  variables:
+    KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
   script:
@@ -70,6 +73,9 @@ deploy-dev:
 # DEPLOY TEST (automatique sur main)
 deploy-test:
   stage: deploy-test
+  image: bitnami/kubectl:latest
+  variables:
+    KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
   script:
@@ -86,6 +92,9 @@ deploy-test:
 # DEPLOY PROD (manuel uniquement)
 deploy-prod:
   stage: deploy-prod
+  image: bitnami/kubectl:latest
+  variables:
+    KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
   script:
