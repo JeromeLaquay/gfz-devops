@@ -64,6 +64,8 @@ deploy-dev:
     - apk add --no-cache curl
     - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
     - chmod +x /usr/local/bin/kubectl
+    - apk add --no-cache sed
+    - sed -i "s/127.0.0.1/$(ip route show default | awk '/default/ {print $3}')/g" /tmp/kubeconfig
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
@@ -87,6 +89,8 @@ deploy-test:
     - apk add --no-cache curl
     - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
     - chmod +x /usr/local/bin/kubectl
+    - apk add --no-cache sed
+    - sed -i "s/127.0.0.1/$(ip route show default | awk '/default/ {print $3}')/g" /tmp/kubeconfig
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
@@ -110,6 +114,8 @@ deploy-prod:
     - apk add --no-cache curl
     - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
     - chmod +x /usr/local/bin/kubectl
+    - apk add --no-cache sed
+    - sed -i "s/127.0.0.1/$(ip route show default | awk '/default/ {print $3}')/g" /tmp/kubeconfig
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
