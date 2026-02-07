@@ -55,12 +55,15 @@ test-backend:
 # DEPLOY DEV (automatique sur develop)
 deploy-dev:
   stage: deploy-dev
-  image: bitnami/kubectl:latest
-  entrypoint: [""]
+  image: alpine:3.19
   variables:
     KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+    - chmod +x /usr/local/bin/kubectl
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
@@ -75,12 +78,15 @@ deploy-dev:
 # DEPLOY TEST (automatique sur main)
 deploy-test:
   stage: deploy-test
-  image: bitnami/kubectl:latest
-  entrypoint: [""]
+  image: alpine:3.19
   variables:
     KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+    - chmod +x /usr/local/bin/kubectl
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
@@ -95,12 +101,15 @@ deploy-test:
 # DEPLOY PROD (manuel uniquement)
 deploy-prod:
   stage: deploy-prod
-  image: bitnami/kubectl:latest
-  entrypoint: [""]
+  image: alpine:3.19
   variables:
     KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+    - chmod +x /usr/local/bin/kubectl
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
