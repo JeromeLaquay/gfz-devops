@@ -5,7 +5,7 @@
         © 2026 Groupe Français des Zéolithes - 
         Réalisation : 
         <a href="https://laquaytech.com" target="_blank" class="hover:text-gray-300 transition">
-          LAQUAYTECH test sur dev 2
+          LAQUAYTECH test sur dev 3
         </a>
         - 
         <NuxtLink to="/mentions-legales" class="hover:text-gray-300 transition">
