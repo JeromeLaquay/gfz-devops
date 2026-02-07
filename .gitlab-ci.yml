@@ -42,6 +42,7 @@ build-backend:
 # TEST STAGE
 test-backend:
   stage: test
+  image: maven:3.9-eclipse-temurin-17
   tags:
     - docker
   script:
