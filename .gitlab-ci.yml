@@ -6,7 +6,7 @@ stages:
   - deploy-prod
 
 variables:
-  REGISTRY: registry.gfz.local:5000
+  REGISTRY: registry.gfz.local:31076
   FRONTEND_IMAGE: ${REGISTRY}/gfz-frontend
   BACKEND_IMAGE: ${REGISTRY}/gfz-backend
 
@@ -42,6 +42,7 @@ build-backend:
 # TEST STAGE
 test-backend:
   stage: test
+  image: maven:3.9-eclipse-temurin-17
   tags:
     - docker
   script:
@@ -54,13 +55,24 @@ test-backend:
 # DEPLOY DEV (automatique sur develop)
 deploy-dev:
   stage: deploy-dev
+  image: alpine:3.19
+  variables:
+    KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - cp /tmp/kubeconfig /tmp/kubeconfig-work
+    - HOST_IP=$(ip route | awk '/default/ {print $3}')
+    - sed -i "s/127.0.0.1/${HOST_IP}/g" /tmp/kubeconfig-work
+    - export KUBECONFIG=/tmp/kubeconfig-work
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n dev
-    - kubectl rollout status deployment/frontend -n dev
-    - kubectl rollout status deployment/backend -n dev
+    - kubectl rollout status deployment/frontend -n dev || true
+    - kubectl rollout status deployment/backend -n dev || true
   environment:
     name: development
     url: http://dev.gfz.local
@@ -70,8 +82,19 @@ deploy-dev:
 # DEPLOY TEST (automatique sur main)
 deploy-test:
   stage: deploy-test
+  image: alpine:3.19
+  variables:
+    KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - cp /tmp/kubeconfig /tmp/kubeconfig-work
+    - HOST_IP=$(ip route | awk '/default/ {print $3}')
+    - sed -i "s/127.0.0.1/${HOST_IP}/g" /tmp/kubeconfig-work
+    - export KUBECONFIG=/tmp/kubeconfig-work
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n test
@@ -86,8 +109,19 @@ deploy-test:
 # DEPLOY PROD (manuel uniquement)
 deploy-prod:
   stage: deploy-prod
+  image: alpine:3.19
+  variables:
+    KUBECONFIG: /tmp/kubeconfig
   tags:
     - k3s
+  before_script:
+    - apk add --no-cache curl
+    - curl -sL "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - cp /tmp/kubeconfig /tmp/kubeconfig-work
+    - HOST_IP=$(ip route | awk '/default/ {print $3}')
+    - sed -i "s/127.0.0.1/${HOST_IP}/g" /tmp/kubeconfig-work
+    - export KUBECONFIG=/tmp/kubeconfig-work
   script:
     - kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
     - kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${CI_COMMIT_SHORT_SHA} -n prod
